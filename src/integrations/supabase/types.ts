@@ -14,7 +14,215 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string | null
+          table_name: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      children: {
+        Row: {
+          age: number
+          created_at: string
+          created_by: string | null
+          district: string
+          education_status: Database["public"]["Enums"]["education_status"]
+          gender: Database["public"]["Enums"]["gender"]
+          guardian_name: string | null
+          guardian_phone: string | null
+          health_status: Database["public"]["Enums"]["health_status"]
+          id: string
+          location: string
+          name: string
+          special_needs: string | null
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          age: number
+          created_at?: string
+          created_by?: string | null
+          district: string
+          education_status?: Database["public"]["Enums"]["education_status"]
+          gender: Database["public"]["Enums"]["gender"]
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          health_status?: Database["public"]["Enums"]["health_status"]
+          id?: string
+          location: string
+          name: string
+          special_needs?: string | null
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          age?: number
+          created_at?: string
+          created_by?: string | null
+          district?: string
+          education_status?: Database["public"]["Enums"]["education_status"]
+          gender?: Database["public"]["Enums"]["gender"]
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          health_status?: Database["public"]["Enums"]["health_status"]
+          id?: string
+          location?: string
+          name?: string
+          special_needs?: string | null
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          amount: number
+          beneficiary_children_count: number | null
+          created_at: string
+          currency: string
+          donor_id: string
+          id: string
+          purpose: string
+          status: string
+          transaction_id: string | null
+        }
+        Insert: {
+          amount: number
+          beneficiary_children_count?: number | null
+          created_at?: string
+          currency?: string
+          donor_id: string
+          id?: string
+          purpose: string
+          status?: string
+          transaction_id?: string | null
+        }
+        Update: {
+          amount?: number
+          beneficiary_children_count?: number | null
+          created_at?: string
+          currency?: string
+          donor_id?: string
+          id?: string
+          purpose?: string
+          status?: string
+          transaction_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          organization_name: string
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          organization_name: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          organization_name?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      success_stories: {
+        Row: {
+          child_id: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          image_url: string | null
+          title: string
+          verified: boolean
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          image_url?: string | null
+          title: string
+          verified?: boolean
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          image_url?: string | null
+          title?: string
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "success_stories_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +231,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      education_status:
+        | "none"
+        | "primary"
+        | "secondary"
+        | "higher_secondary"
+        | "vocational"
+      gender: "male" | "female" | "other"
+      health_status: "excellent" | "good" | "fair" | "poor" | "critical"
+      user_role: "admin" | "corporate" | "ngo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +366,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      education_status: [
+        "none",
+        "primary",
+        "secondary",
+        "higher_secondary",
+        "vocational",
+      ],
+      gender: ["male", "female", "other"],
+      health_status: ["excellent", "good", "fair", "poor", "critical"],
+      user_role: ["admin", "corporate", "ngo"],
+    },
   },
 } as const
