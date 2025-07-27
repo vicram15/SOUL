@@ -117,11 +117,15 @@ export const Dashboard = () => {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg gradient-hero">
-                <Heart className="h-6 w-6 text-white" />
+              <img
+  src="/LOGO.png"
+  alt="SOUL Logo"
+  className="h-15 w-10 object-contain"
+/>
               </div>
               <div>
-                <h1 className="text-xl font-bold">CSR Dashboard</h1>
-                <p className="text-sm text-muted-foreground">Street Children Impact Platform</p>
+                <h1 className="text-xl font-bold">SOUL CSR DASHBOARD</h1>
+                <p className="text-sm text-muted-foreground">Supporting Outreach for Uplifting Lives</p>
               </div>
             </div>
             <div className="flex items-center gap-4">

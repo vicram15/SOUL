@@ -51,16 +51,20 @@ export const LoginForm: React.FC<LoginFormProps> = ({ isSignUp, onToggleMode }) 
         <CardHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
             <div className="p-3 rounded-full gradient-hero">
-              <Heart className="h-8 w-8 text-white" />
+            <img
+  src="/LOGO.png"
+  alt="SOUL Logo"
+  className="h-25 w-20 object-contain"
+/>
             </div>
           </div>
           <CardTitle className="text-2xl font-bold">
-            {isSignUp ? 'Join CSR Dashboard' : 'Welcome Back'}
+            {isSignUp ? 'Join SOUL CSR Dashboard' : 'Welcome Back'}
           </CardTitle>
           <CardDescription>
             {isSignUp 
               ? 'Create your account to start making an impact' 
-              : 'Sign in to access your CSR dashboard'
+              : 'Sign in to access your SOUL CSR dashboard'
             }
           </CardDescription>
         </CardHeader>

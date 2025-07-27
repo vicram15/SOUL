@@ -39,12 +39,12 @@
     --radius: 0.75rem;
     
     /* Custom gradients for CSR theme */
-    --gradient-hero: linear-gradient(135deg, hsl(200 98% 39%), hsl(156 73% 59%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
-    --gradient-accent: linear-gradient(90deg, hsl(156 73% 59%), hsl(200 98% 39%));
+    --gradient-hero: linear-gradient(135deg, hsla(0, 85%, 49%, 0), #aef397);
+    --gradient-card: linear-gradient(145deg, hsl(0, 7%, 97%), #faf6f4);
+    --gradient-accent: linear-gradient(90deg, #58cc05, #58cc05);
     
     /* Custom shadows */
-    --shadow-elegant: 0 10px 30px -10px hsl(200 98% 39% / 0.2);
+    --shadow-elegant: 0 10px 30px -10px hsla(23, 85%, 30%, 0.2);
     --shadow-card: 0 4px 20px hsl(200 98% 39% / 0.1);
 
     --sidebar-background: 0 0% 98%;
@@ -93,7 +93,7 @@
     --input: 217 33% 17%;
     --ring: 200 98% 39%;
     
-    --gradient-hero: linear-gradient(135deg, hsl(200 98% 39%), hsl(156 73% 59%));
+    --gradient-hero: linear-gradient(135deg, hsl(17, 98%, 39%), hsl(28, 89%, 45%));
     --gradient-card: linear-gradient(145deg, hsl(222 84% 4.9%), hsl(217 33% 17%));
     --shadow-elegant: 0 10px 30px -10px hsl(200 98% 39% / 0.3);
     --shadow-card: 0 4px 20px hsl(200 98% 39% / 0.15);
