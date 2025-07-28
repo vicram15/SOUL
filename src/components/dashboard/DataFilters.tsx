@@ -2,8 +2,19 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Filter, Download, RefreshCw } from 'lucide-react';
 
 interface DataFiltersProps {
@@ -14,7 +25,7 @@ interface DataFiltersProps {
     educationStatus: string;
     search: string;
   };
-  onFilterChange: (key: string, value: string) => void;
+  onFilterChange: (key: keyof DataFiltersProps['filters'], value: string) => void;
   onExportData: () => void;
   onRefreshData: () => void;
   loading?: boolean;
@@ -29,16 +40,18 @@ export const DataFilters: React.FC<DataFiltersProps> = ({
 }) => {
   const districts = [
     'All Districts',
-    'Mumbai Central',
-    'Delhi North',
-    'Kolkata East',
-    'Pune West',
-    'Chennai South',
-    'Bangalore North',
-    'Hyderabad Central',
-    'Jaipur East',
-    'Lucknow West',
-    'Visakhapatnam',
+    'Pune',
+    'Ahmedhabad',
+    'Delhi',
+    'Vadhora',
+    'Trivandrum',
+    'Raipur',
+    'Erode',
+    'Chennai',
+    'Madurai',
+    'Coimbatore',
+    'Salem',
+    'Tiruchirappalli'
   ];
 
   const ageGroups = [
@@ -143,7 +156,9 @@ export const DataFilters: React.FC<DataFiltersProps> = ({
             <Label>Education Status</Label>
             <Select
               value={filters.educationStatus}
-              onValueChange={(value) => onFilterChange('educationStatus', value)}
+              onValueChange={(value) =>
+                onFilterChange('educationStatus', value)
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select education" />
