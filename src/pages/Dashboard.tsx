@@ -7,7 +7,13 @@ import { ChartsSection } from '@/components/dashboard/ChartsSection';
 import { ChildrenTable } from '@/components/dashboard/ChildrenTable';
 import { SuccessStories } from '@/components/dashboard/SuccessStories';
 import { DonationSection } from '@/components/dashboard/DonationSection';
+import { RiskPrediction } from '@/components/dashboard/RiskPrediction';
+import { FundingForecast } from '@/components/dashboard/FundingForecast';
+import { GeospatialHeatmap } from '@/components/dashboard/GeospatialHeatmap';
+import { CSRSuggestions } from '@/components/dashboard/CSRSuggestions';
+import { ImpactTracking } from '@/components/dashboard/ImpactTracking';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LogOut, Heart, Building2 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -149,23 +155,57 @@ export const Dashboard = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           <DashboardStats stats={stats} />
-          <DataFilters 
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onExportData={handleExportData}
-            onRefreshData={fetchData}
-            loading={loading}
-          />
-          <ChartsSection children={filteredChildren} />
-          <div className="grid gap-8 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <ChildrenTable children={filteredChildren} onViewChild={console.log} />
-            </div>
-            <div>
-              <SuccessStories stories={successStories} onViewMore={() => {}} />
-            </div>
-          </div>
-          <DonationSection totalDonations={75000} childrenSupported={45} impactGrowth={18} />
+          
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
+              <TabsTrigger value="predictions">AI Insights</TabsTrigger>
+              <TabsTrigger value="suggestions">CSR Suggestions</TabsTrigger>
+              <TabsTrigger value="impact">My Impact</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="space-y-8">
+              <DataFilters 
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onExportData={handleExportData}
+                onRefreshData={fetchData}
+                loading={loading}
+              />
+              <ChartsSection children={filteredChildren} />
+              <div className="grid gap-8 lg:grid-cols-3">
+                <div className="lg:col-span-2">
+                  <ChildrenTable children={filteredChildren} onViewChild={console.log} />
+                </div>
+                <div>
+                  <SuccessStories stories={successStories} onViewMore={() => {}} />
+                </div>
+              </div>
+              <DonationSection totalDonations={75000} childrenSupported={45} impactGrowth={18} />
+            </TabsContent>
+
+            <TabsContent value="analytics">
+              <FundingForecast children={filteredChildren} />
+            </TabsContent>
+
+            <TabsContent value="heatmap">
+              <GeospatialHeatmap children={filteredChildren} />
+            </TabsContent>
+
+            <TabsContent value="predictions">
+              <RiskPrediction children={filteredChildren} />
+            </TabsContent>
+
+            <TabsContent value="suggestions">
+              <CSRSuggestions userProfile={profile} children={filteredChildren} />
+            </TabsContent>
+
+            <TabsContent value="impact">
+              <ImpactTracking userProfile={profile} />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
     </div>
