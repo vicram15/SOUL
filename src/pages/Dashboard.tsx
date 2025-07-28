@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { supabase } from '@/integrations/supabase/client';
 import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { DataFilters } from '@/components/dashboard/DataFilters';
 import { ChartsSection } from '@/components/dashboard/ChartsSection';
@@ -39,14 +38,15 @@ export const Dashboard = () => {
   }, [children, filters]);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const [childrenRes, storiesRes] = await Promise.all([
-        supabase.from('children').select('*').eq('verified', true),
-        supabase.from('success_stories').select('*, children(name, age)').eq('verified', true)
+        fetch('http://localhost:3001/api/children').then(res => res.json()),
+        fetch('http://localhost:3001/api/success-stories').then(res => res.json())
       ]);
 
-      if (childrenRes.data) setChildren(childrenRes.data);
-      if (storiesRes.data) setSuccessStories(storiesRes.data);
+      setChildren(childrenRes);
+      setSuccessStories(storiesRes);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -56,13 +56,22 @@ export const Dashboard = () => {
 
   const applyFilters = () => {
     let filtered = children.filter(child => {
-      if (filters.search && !child.name.toLowerCase().includes(filters.search.toLowerCase()) && 
-          !child.location.toLowerCase().includes(filters.search.toLowerCase())) return false;
-      if (filters.district !== 'All Districts' && child.district !== filters.district) return false;
-      if (filters.gender !== 'All Genders' && child.gender !== filters.gender.toLowerCase()) return false;
-      if (filters.educationStatus !== 'All Education Levels' && 
-          child.education_status !== filters.educationStatus.toLowerCase().replace(' ', '_')) return false;
-      
+      if (
+        filters.search &&
+        !child.name.toLowerCase().includes(filters.search.toLowerCase()) &&
+        !child.location.toLowerCase().includes(filters.search.toLowerCase())
+      )
+        return false;
+      if (filters.district !== 'All Districts' && child.district !== filters.district)
+        return false;
+      if (filters.gender !== 'All Genders' && child.gender !== filters.gender.toLowerCase())
+        return false;
+      if (
+        filters.educationStatus !== 'All Education Levels' &&
+        child.education_status !== filters.educationStatus.toLowerCase().replace(' ', '_')
+      )
+        return false;
+
       if (filters.ageGroup !== 'All Ages') {
         const ageRanges = {
           '0-5 years': [0, 5],
@@ -73,7 +82,7 @@ export const Dashboard = () => {
         const [min, max] = ageRanges[filters.ageGroup] || [0, 100];
         if (child.age < min || child.age > max) return false;
       }
-      
+
       return true;
     });
     setFilteredChildren(filtered);
@@ -84,16 +93,20 @@ export const Dashboard = () => {
   };
 
   const handleExportData = () => {
-    const csvContent = "data:text/csv;charset=utf-8," + 
-      "Name,Age,Gender,District,Location,Education,Health\n" +
-      filteredChildren.map(child => 
-        `${child.name},${child.age},${child.gender},${child.district},${child.location},${child.education_status},${child.health_status}`
-      ).join("\n");
-    
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      'Name,Age,Gender,District,Location,Education,Health\n' +
+      filteredChildren
+        .map(
+          child =>
+            `${child.name},${child.age},${child.gender},${child.district},${child.location},${child.education_status},${child.health_status}`
+        )
+        .join('\n');
+
     const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "children_data.csv");
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'children_data.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -107,12 +120,14 @@ export const Dashboard = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <Heart className="h-12 w-12 text-primary mx-auto mb-4 animate-pulse" />
-        <p>Loading dashboard...</p>
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Heart className="h-12 w-12 text-primary mx-auto mb-4 animate-pulse" />
+          <p>Loading dashboard...</p>
+        </div>
       </div>
-    </div>;
+    );
   }
 
   return (
@@ -123,11 +138,7 @@ export const Dashboard = () => {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg gradient-hero">
-              <img
-  src="/LOGO.png"
-  alt="SOUL Logo"
-  className="h-15 w-10 object-contain"
-/>
+                <img src="/LOGO.png" alt="SOUL Logo" className="h-15 w-10 object-contain" />
               </div>
               <div>
                 <h1 className="text-xl font-bold">SOUL CSR DASHBOARD</h1>
@@ -138,7 +149,11 @@ export const Dashboard = () => {
               <div className="text-right">
                 <div className="font-medium">{profile?.full_name}</div>
                 <div className="text-sm text-muted-foreground flex items-center gap-1">
-                  {profile?.role === 'corporate' ? <Building2 className="h-3 w-3" /> : <Heart className="h-3 w-3" />}
+                  {profile?.role === 'corporate' ? (
+                    <Building2 className="h-3 w-3" />
+                  ) : (
+                    <Heart className="h-3 w-3" />
+                  )}
                   {profile?.organization_name}
                 </div>
               </div>
@@ -155,7 +170,7 @@ export const Dashboard = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           <DashboardStats stats={stats} />
-          
+
           <Tabs defaultValue="overview" className="space-y-6">
             <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -167,7 +182,7 @@ export const Dashboard = () => {
             </TabsList>
 
             <TabsContent value="overview" className="space-y-8">
-              <DataFilters 
+              <DataFilters
                 filters={filters}
                 onFilterChange={handleFilterChange}
                 onExportData={handleExportData}
