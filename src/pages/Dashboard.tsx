@@ -41,8 +41,8 @@ export const Dashboard = () => {
     setLoading(true);
     try {
       const [childrenRes, storiesRes] = await Promise.all([
-        fetch('http://localhost:3001/api/children').then(res => res.json()),
-        fetch('http://localhost:3001/api/success-stories').then(res => res.json())
+        fetch('https://soul-7w0s.onrender.com/api/children').then(res => res.json()),
+        fetch('https://soul-7w0s.onrender.com/api/success-stories').then(res => res.json())
       ]);
 
       setChildren(childrenRes);
