@@ -106,13 +106,13 @@ export const CSRSuggestions: React.FC<CSRSuggestionsProps> = ({ userProfile, chi
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="gradient-hero text-white border-0">
+      <Card className="gradient-hero text-black border-0">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Lightbulb className="h-6 w-6" />
             Smart CSR Recommendations for {userProfile?.organization_name}
           </CardTitle>
-          <p className="text-white/90">
+          <p className="text-black/90">
             AI-powered suggestions based on current needs, your contribution history, and maximum impact potential
           </p>
         </CardHeader>

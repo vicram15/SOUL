@@ -83,7 +83,7 @@ export const ChartsSection: React.FC<ChartsSectionProps> = ({ children }) => {
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3  3" />
               <XAxis dataKey="district" />
               <YAxis />
               <Tooltip />
