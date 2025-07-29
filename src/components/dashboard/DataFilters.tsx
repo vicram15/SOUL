@@ -109,7 +109,7 @@ export const DataFilters: React.FC<DataFiltersProps> = ({
         {/* Filter Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-2">
-            <Label>District</Label>
+            <Label>State</Label>
             <Select
               value={filters.district}
               onValueChange={(value) => onFilterChange('district', value)}
