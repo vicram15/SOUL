@@ -28,7 +28,7 @@ export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children }) => {
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const displayedChildren = showAll ? children : children.slice(0, 10);
+  const displayedChildren = showAll ? children : children.slice(0, 5);
 
   const getEducationBadgeVariant = (status: string) => {
     switch (status) {
@@ -180,7 +180,7 @@ export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children }) => {
               ))}
             </TableBody>
           </Table>
-          {children.length > 10 && (
+          {children.length > 5 && (
             <div className="flex justify-center mt-4">
               <Button
                 variant="outline"

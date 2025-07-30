@@ -13,7 +13,7 @@ import { CSRSuggestions } from '@/components/dashboard/CSRSuggestions';
 import { ImpactTracking } from '@/components/dashboard/ImpactTracking';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Heart, Building2 } from 'lucide-react';
+import { LogOut, Heart, Building2, FileText } from 'lucide-react';
 
 // Helper for fetch with timeout
 const fetchWithTimeout = (url: string, options = {}, timeout = 10000) =>
@@ -26,6 +26,8 @@ const fetchWithTimeout = (url: string, options = {}, timeout = 10000) =>
 
 export const Dashboard = () => {
   const { user, profile, signOut } = useAuth();
+  const [activeTab, setActiveTab] = useState('overview');
+  const [impactDefaultTab, setImpactDefaultTab] = useState('contributions');
   const [children, setChildren] = useState([]);
   const [filteredChildren, setFilteredChildren] = useState([]);
   const [successStories, setSuccessStories] = useState([]);
@@ -173,6 +175,34 @@ export const Dashboard = () => {
                   {profile?.organization_name}
                 </div>
               </div>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setImpactDefaultTab('reports');
+                  setActiveTab('impact');
+                  // Scroll to download reports section after tab content is rendered
+                  setTimeout(() => {
+                    // Try multiple selectors to find the reports section
+                    const downloadReportsSection = document.getElementById('download-reports-section') ||
+                                                   document.querySelector('[data-section="download-reports"]') ||
+                                                   document.querySelector('[data-tab="reports"]');
+                    
+                    if (downloadReportsSection) {
+                      downloadReportsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                      // Fallback: scroll to the impact tab content
+                      const impactContent = document.querySelector('[data-state="active"]');
+                      if (impactContent) {
+                        impactContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }
+                  }, 500);
+                }}
+                className="flex items-center gap-2"
+              >
+                <FileText className="h-4 w-4" />
+                Reports
+              </Button>
               <Button variant="outline" onClick={signOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
@@ -187,14 +217,44 @@ export const Dashboard = () => {
         <div className="space-y-8">
           <DashboardStats stats={stats} />
 
-          <Tabs defaultValue="overview" className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
-              <TabsTrigger value="predictions">AI Insights</TabsTrigger>
-              <TabsTrigger value="suggestions">CSR Suggestions</TabsTrigger>
-              <TabsTrigger value="impact">My Impact</TabsTrigger>
+              <TabsTrigger 
+                value="overview"
+                className="hover:bg-emerald-500 hover:text-white transition-colors duration-200"
+              >
+                Overview
+              </TabsTrigger>
+              <TabsTrigger 
+                value="analytics"
+                className="hover:bg-emerald-500 hover:text-white transition-colors duration-200"
+              >
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger 
+                value="heatmap"
+                className="hover:bg-emerald-500 hover:text-white transition-colors duration-200"
+              >
+                Heatmap
+              </TabsTrigger>
+              <TabsTrigger 
+                value="predictions"
+                className="hover:bg-emerald-500 hover:text-white transition-colors duration-200"
+              >
+                AI Insights
+              </TabsTrigger>
+              <TabsTrigger 
+                value="suggestions"
+                className="hover:bg-emerald-500 hover:text-white transition-colors duration-200"
+              >
+                CSR Suggestions
+              </TabsTrigger>
+              <TabsTrigger 
+                value="impact"
+                className="hover:bg-emerald-500 hover:text-white transition-colors duration-200"
+              >
+                My Impact
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-8">
@@ -234,7 +294,7 @@ export const Dashboard = () => {
             </TabsContent>
 
             <TabsContent value="impact">
-              <ImpactTracking userProfile={profile} />
+              <ImpactTracking userProfile={profile} defaultTab={impactDefaultTab} />
             </TabsContent>
           </Tabs>
         </div>
