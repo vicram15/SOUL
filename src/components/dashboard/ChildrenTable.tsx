@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -22,8 +23,10 @@ interface ChildrenTableProps {
   onViewChild: (child: Child) => void;
 }
 
-export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children, onViewChild }) => {
+export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children }) => {
   const [showAll, setShowAll] = useState(false);
+  const [selectedChild, setSelectedChild] = useState<Child | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const displayedChildren = showAll ? children : children.slice(0, 10);
 
@@ -60,7 +63,39 @@ export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children, onViewCh
   };
 
   return (
-    <Card className="shadow-card">
+    <>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Child Details</DialogTitle>
+            <DialogDescription>
+              {selectedChild && (
+                <div className="space-y-2">
+                  <div><strong>Name:</strong> {selectedChild.name}</div>
+                  <div><strong>Age:</strong> {selectedChild.age}</div>
+                  <div><strong>Gender:</strong> {selectedChild.gender.charAt(0).toUpperCase() + selectedChild.gender.slice(1)}</div>
+                  <div><strong>District:</strong> {selectedChild.district}</div>
+                  <div><strong>Location:</strong> {selectedChild.location}</div>
+                  <div><strong>Education Status:</strong> {formatEducationStatus(selectedChild.education_status)}</div>
+                  <div><strong>Health Status:</strong> {formatHealthStatus(selectedChild.health_status)}</div>
+                  <div><strong>Status:</strong> {selectedChild.verified ? 'Verified' : 'Pending'}</div>
+                  <div className="pt-4">
+                    <Button
+                      className="w-full gradient-hero text-white border-0"
+                      onClick={() => {
+                        alert(`Contribute to ${selectedChild.name}`);
+                      }}
+                    >
+                      Contribute
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+      <Card className="shadow-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Heart className="h-5 w-5 text-primary" />
@@ -131,7 +166,10 @@ export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children, onViewCh
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => onViewChild(child)}
+                      onClick={() => {
+                        setSelectedChild(child);
+                        setDialogOpen(true);
+                      }}
                       className="flex items-center gap-1"
                     >
                       <Eye className="h-3 w-3" />
@@ -156,5 +194,6 @@ export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children, onViewCh
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

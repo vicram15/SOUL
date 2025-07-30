@@ -31,12 +31,13 @@ export const FundingForecast: React.FC<FundingForecastProps> = ({ children }) =>
   const forecastData = generateForecastData();
   
   // Regional funding needs
+  // Calculate gap for each region
   const regionalNeeds = [
-    { region: 'Urban Mumbai', need: 125000, funded: 85000, children: 45 },
-    { region: 'Rural Maharashtra', need: 180000, funded: 95000, children: 78 },
-    { region: 'Delhi NCR', need: 95000, funded: 70000, children: 32 },
-    { region: 'Bangalore Urban', need: 110000, funded: 82000, children: 38 },
-    { region: 'Chennai Metro', need: 88000, funded: 65000, children: 29 },
+    { region: 'Urban Mumbai', need: 125000, funded: 85000, gap: 125000 - 85000, children: 45 },
+    { region: 'Rural Maharashtra', need: 180000, funded: 95000, gap: 180000 - 95000, children: 78 },
+    { region: 'Delhi NCR', need: 95000, funded: 70000, gap: 95000 - 70000, children: 32 },
+    { region: 'Bangalore Urban', need: 110000, funded: 82000, gap: 110000 - 82000, children: 38 },
+    { region: 'Chennai Metro', need: 88000, funded: 65000, gap: 88000 - 65000, children: 29 },
   ];
 
   const totalProjectedNeed = forecastData.reduce((sum, item) => sum + (item.forecastNeed || 0), 0);
@@ -132,16 +133,32 @@ export const FundingForecast: React.FC<FundingForecastProps> = ({ children }) =>
           <CardTitle>Regional Funding Priorities</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={regionalNeeds} layout="horizontal">
+          <ResponsiveContainer width="100%" height={350}>
+            <BarChart
+              data={regionalNeeds}
+              layout="vertical"
+              margin={{ top: 10, right: 40, left: 40, bottom: 10 }}
+              barCategoryGap={20}
+            >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis type="number" tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`} />
-              <YAxis dataKey="region" type="category" width={120} />
-              <Tooltip formatter={(value) => [`₹${(Number(value) / 1000).toFixed(0)}K`, '']} />
-              <Bar dataKey="need" fill="hsl(200, 98%, 39%)" name="Total Need" />
-              <Bar dataKey="funded" fill="hsl(156, 73%, 59%)" name="Current Funding" />
+              <YAxis dataKey="region" type="category" width={140} />
+              <Tooltip
+                formatter={(value, name) => [`₹${(Number(value) / 1000).toFixed(1)}K`, name === 'funded' ? 'Funded' : 'Gap']}
+                labelFormatter={(label) => `Region: ${label}`}
+              />
+              <Legend />
+              <Bar dataKey="funded" stackId="a" fill="hsl(156, 73%, 59%)" name="Funded" />
+              <Bar dataKey="gap" stackId="a" fill="hsl(348, 83%, 47%)" name="Gap" />
             </BarChart>
           </ResponsiveContainer>
+          <div className="text-xs text-muted-foreground mt-2">
+            <span className="inline-block w-3 h-3 rounded-full mr-1" style={{ background: 'hsl(156, 73%, 59%)' }} /> Funded &nbsp;
+            <span className="inline-block w-3 h-3 rounded-full mr-1" style={{ background: 'hsl(348, 83%, 47%)' }} /> Gap
+          </div>
+          <div className="text-xs mt-2">
+            <strong>Note:</strong> Each bar shows the total need, with the funded portion in green and the gap in red.
+          </div>
         </CardContent>
       </Card>
     </div>
