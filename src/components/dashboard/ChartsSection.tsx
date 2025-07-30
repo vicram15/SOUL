@@ -24,10 +24,13 @@ export const ChartsSection: React.FC<ChartsSectionProps> = ({ children }) => {
     return acc;
   }, {} as Record<string, number>);
 
-  const barChartData = Object.entries(districtData).map(([district, count]) => ({
-    district: district.split(' ')[0], // Shorten names for display
-    count,
-  }));
+  // Bar chart data: sort districts alphabetically and use full names
+  const barChartData = Object.entries(districtData)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([district, count]) => ({
+      district, // use full name for clarity
+      count,
+    }));
 
   const educationData = children.reduce((acc, child) => {
     const status = child.education_status;
@@ -83,8 +86,16 @@ export const ChartsSection: React.FC<ChartsSectionProps> = ({ children }) => {
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barChartData}>
-              <CartesianGrid strokeDasharray="3  3" />
-              <XAxis dataKey="district" />
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="district"
+                angle={-30}
+                textAnchor="end"
+                interval={0}
+                height={60}
+                tick={false}
+                label={{ value: 'States', position: 'insideBottom', offset: 10, fontSize: 18, fontWeight: 600 }}
+              />
               <YAxis />
               <Tooltip />
               <Bar dataKey="count" fill="hsl(200, 98%, 39%)" radius={[4, 4, 0, 0]} />
@@ -106,8 +117,8 @@ export const ChartsSection: React.FC<ChartsSectionProps> = ({ children }) => {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
+                label={false}
+                outerRadius={100}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -115,6 +126,7 @@ export const ChartsSection: React.FC<ChartsSectionProps> = ({ children }) => {
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
+              <Legend verticalAlign="bottom" height={36} />
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>

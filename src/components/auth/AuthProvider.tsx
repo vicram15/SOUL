@@ -36,7 +36,7 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -159,7 +159,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      setLoading(true);
       const { error } = await supabase.auth.signOut();
       if (error) {
         toast({
@@ -169,17 +168,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         throw error;
       }
-      // Clear state immediately
       setUser(null);
       setProfile(null);
       toast({
         title: "Success",
         description: "Signed out successfully",
       });
+      window.location.reload();
     } catch (error) {
+      toast({
+        title: "Sign out error",
+        description: error instanceof Error ? error.message : String(error),
+        variant: "destructive",
+      });
       console.error('Sign out error:', error);
-    } finally {
-      setLoading(false);
     }
   };
 

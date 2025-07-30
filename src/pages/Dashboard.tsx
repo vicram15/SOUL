@@ -15,6 +15,15 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LogOut, Heart, Building2 } from 'lucide-react';
 
+// Helper for fetch with timeout
+const fetchWithTimeout = (url: string, options = {}, timeout = 10000) =>
+  Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Request timed out')), timeout)
+    ),
+  ]);
+
 export const Dashboard = () => {
   const { user, profile, signOut } = useAuth();
   const [children, setChildren] = useState([]);
@@ -28,6 +37,7 @@ export const Dashboard = () => {
     educationStatus: 'All Education Levels',
     search: '',
   });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -39,15 +49,20 @@ export const Dashboard = () => {
 
   const fetchData = async () => {
     setLoading(true);
+    setError(null);
     try {
       const [childrenRes, storiesRes] = await Promise.all([
-        fetch('https://soul-7w0s.onrender.com/api/children').then(res => res.json()),
-        fetch('https://soul-7w0s.onrender.com/api/success-stories').then(res => res.json())
+        fetchWithTimeout('https://soul-7w0s.onrender.com/api/children') as Promise<Response>,
+        fetchWithTimeout('https://soul-7w0s.onrender.com/api/success-stories') as Promise<Response>
       ]);
-
-      setChildren(childrenRes);
-      setSuccessStories(storiesRes);
+      const childrenData = await childrenRes.json();
+      const storiesData = await storiesRes.json();
+      setChildren(Array.isArray(childrenData) ? childrenData : []);
+      setSuccessStories(Array.isArray(storiesData) ? storiesData : []);
     } catch (error) {
+      setError('Failed to load data. Please check your connection and try again.');
+      setChildren([]);
+      setSuccessStories([]);
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
@@ -119,12 +134,13 @@ export const Dashboard = () => {
     impactGrowth: 24,
   };
 
-  if (loading) {
+  // Remove the loading page; always render dashboard content
+  if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Heart className="h-12 w-12 text-primary mx-auto mb-4 animate-pulse" />
-          <p>Loading dashboard...</p>
+          <p className="text-red-500 mb-4">{error}</p>
+          <Button onClick={fetchData}>Retry</Button>
         </div>
       </div>
     );

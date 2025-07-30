@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +23,10 @@ interface ChildrenTableProps {
 }
 
 export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children, onViewChild }) => {
+  const [showAll, setShowAll] = useState(false);
+
+  const displayedChildren = showAll ? children : children.slice(0, 10);
+
   const getEducationBadgeVariant = (status: string) => {
     switch (status) {
       case 'none': return 'destructive';
@@ -77,7 +81,7 @@ export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children, onViewCh
               </TableRow>
             </TableHeader>
             <TableBody>
-              {children.map((child) => (
+              {displayedChildren.map((child) => (
                 <TableRow key={child.id} className="hover:bg-muted/50 transition-smooth">
                   <TableCell>
                     <div className="space-y-1">
@@ -138,6 +142,17 @@ export const ChildrenTable: React.FC<ChildrenTableProps> = ({ children, onViewCh
               ))}
             </TableBody>
           </Table>
+          {children.length > 10 && (
+            <div className="flex justify-center mt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAll((prev) => !prev)}
+              >
+                {showAll ? 'Show Less' : 'Show More'}
+              </Button>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
